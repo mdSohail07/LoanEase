@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { FaIdCard, FaMapMarkerAlt, FaPhone, FaCalendarAlt, FaCheckCircle, FaMoneyBillWave } from 'react-icons/fa';
+const API_URL = import.meta.env.VITE_BACKEND_API_URL;
 
 const KYCVerification = () => {
     const { user, updateUserData } = useAuth();
@@ -25,7 +26,7 @@ const KYCVerification = () => {
                 const config = {
                     headers: { Authorization: `Bearer ${user.token}` },
                 };
-                const { data } = await axios.get('http://localhost:5050/api/auth/profile', config);
+                const { data } = await axios.get(`${API_URL}/api/auth/profile`, config);
                 setFormData({
                     name: data.name,
                     mobile: data.mobile || '',
@@ -50,7 +51,7 @@ const KYCVerification = () => {
             const config = {
                 headers: { Authorization: `Bearer ${user.token}` },
             };
-            await axios.put('http://localhost:5050/api/auth/profile', { ...formData, kycSubmitted: true }, config);
+            await axios.put(`${API_URL}/api/auth/profile`, { ...formData, kycSubmitted: true }, config);
             setStatus('pending');
             updateUserData({ kycStatus: 'pending' });
             alert('KYC submitted successfully!');
