@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+const API_URL = import.meta.env.VITE_BACKEND_API_URL;
 
 const AuthContext = createContext();
 
@@ -24,7 +25,7 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (email, password) => {
         try {
-            const response = await axios.post('http://localhost:5050/api/auth/login', { email, password });
+            const response = await axios.post(`${API_URL}/api/auth/login`, { email, password });
             setUser(response.data);
             localStorage.setItem('loanEaseUser', JSON.stringify(response.data));
             return { success: true };
@@ -35,7 +36,7 @@ export const AuthProvider = ({ children }) => {
 
     const register = async (name, email, password) => {
         try {
-            const response = await axios.post('http://localhost:5050/api/auth/register', { name, email, password });
+            const response = await axios.post(`${API_URL}/api/auth/register`, { name, email, password });
             setUser(response.data);
             localStorage.setItem('loanEaseUser', JSON.stringify(response.data));
             return { success: true };
