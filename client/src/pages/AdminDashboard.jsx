@@ -3,6 +3,8 @@ import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { FaUsers, FaHandHoldingUsd, FaClock, FaCheckCircle, FaTimesCircle, FaChartPie, FaRocket, FaHistory } from 'react-icons/fa';
 
+const API_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:5050';
+
 const AdminDashboard = () => {
     const { user } = useAuth();
     const [loans, setLoans] = useState([]);
@@ -26,10 +28,10 @@ const AdminDashboard = () => {
         try {
             const config = { headers: { Authorization: `Bearer ${user.token}` } };
             const [loansRes, kycsRes, statsRes, usersRes] = await Promise.all([
-                axios.get('http://localhost:5050/api/loans', config),
-                axios.get('http://localhost:5050/api/admin/kyc/pending', config),
-                axios.get('http://localhost:5050/api/admin/stats', config),
-                axios.get('http://localhost:5050/api/admin/users', config)
+                axios.get(`${API_URL}/api/loans`, config),
+                axios.get(`${API_URL}/api/admin/kyc/pending`, config),
+                axios.get(`${API_URL}/api/admin/stats`, config),
+                axios.get(`${API_URL}/api/admin/users`, config)
             ]);
             setLoans(loansRes.data);
             setPendingKYCs(kycsRes.data);
@@ -41,36 +43,35 @@ const AdminDashboard = () => {
     };
 
     const updateLoanStatus = async (id, status) => {
-        try {
-            const config = { headers: { Authorization: `Bearer ${user.token}` } };
-            await axios.put(`http://localhost:5050/api/loans/${id}`, { status }, config);
-            fetchData();
-        } catch (error) {
-            alert('Failed to update loan status');
-        }
-    };
+    try {
+        const config = { headers: { Authorization: `Bearer ${user.token}` } };
+        await axios.put(`${API_URL}/api/loans/${id}`, { status }, config);
+        fetchData();
+    } catch (error) {
+        alert('Failed to update loan status');
+    }
+};
+   const disburseLoan = async (id) => {
+    try {
+        const config = { headers: { Authorization: `Bearer ${user.token}` } };
+        await axios.put(`${API_URL}/api/loans/${id}/disburse`, {}, config);
+        fetchData();
+        alert('Loan Disbursed Successfully!');
+    } catch (error) {
+        alert('Disbursement Failed');
+    }
+};
 
-    const disburseLoan = async (id) => {
-        try {
-            const config = { headers: { Authorization: `Bearer ${user.token}` } };
-            await axios.put(`http://localhost:5050/api/loans/${id}/disburse`, {}, config);
-            fetchData();
-            alert('Loan Disbursed Successfully!');
-        } catch (error) {
-            alert('Disbursement Failed');
-        }
-    };
-
-    const verifyKYC = async (userId, status) => {
-        try {
-            const config = { headers: { Authorization: `Bearer ${user.token}` } };
-            await axios.put('http://localhost:5050/api/admin/kyc/verify', { userId, status }, config);
-            fetchData();
-            alert(`KYC Successfully ${status.toUpperCase()}! User has been notified.`);
-        } catch (error) {
-            alert('Failed to verify KYC');
-        }
-    };
+   const verifyKYC = async (userId, status) => {
+    try {
+        const config = { headers: { Authorization: `Bearer ${user.token}` } };
+        await axios.put(`${API_URL}/api/admin/kyc/verify`, { userId, status }, config);
+        fetchData();
+        alert(`KYC Successfully ${status.toUpperCase()}! User has been notified.`);
+    } catch (error) {
+        alert('Failed to verify KYC');
+    }
+};
 
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 

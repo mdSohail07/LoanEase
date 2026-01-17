@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 import { FaWallet, FaCheckCircle, FaHourglassHalf, FaTimesCircle, FaCalendarAlt, FaChartLine, FaArrowRight, FaClock, FaHandHoldingUsd } from 'react-icons/fa';
 
+const API_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:5050';
 const UserDashboard = () => {
     const { user, updateUserData } = useAuth();
     const [loans, setLoans] = useState([]);
@@ -20,7 +21,7 @@ const UserDashboard = () => {
         if (!user || !user.token) return;
         try {
             const config = { headers: { Authorization: `Bearer ${user.token}` } };
-            const { data } = await axios.get('http://localhost:5050/api/loans', config);
+            const { data } = await axios.get(`${API_URL}/api/loans`, config);
             setLoans(data);
 
             const disbursedLoans = data.filter(l => l.status === 'disbursed');
@@ -42,7 +43,7 @@ const UserDashboard = () => {
             });
 
             // Refresh credit score and sync state
-            const scoreRes = await axios.get('http://localhost:5050/api/auth/profile/credit-score', config);
+            const scoreRes = await axios.get(`${API_URL}/api/auth/profile/credit-score`, config);
             updateUserData({ creditScore: scoreRes.data.creditScore });
         } catch (error) {
             console.error('Error fetching loans:', error);
@@ -53,7 +54,7 @@ const UserDashboard = () => {
         if (!user || !user.token) return;
         try {
             const config = { headers: { Authorization: `Bearer ${user.token}` } };
-            await axios.post(`http://localhost:5050/api/loans/${loanId}/pay`, { emiId }, config);
+            await axios.post(`${API_URL}/api/loans/${loanId}/pay`, { emiId }, config);
             fetchLoans();
             alert('Payment Successful!');
         } catch (error) {
@@ -65,7 +66,7 @@ const UserDashboard = () => {
         if (!user || !user.token) return;
         try {
             const config = { headers: { Authorization: `Bearer ${user.token}` } };
-            await axios.put(`http://localhost:5050/api/loans/${loanId}/accept-offer`, {}, config);
+            await axios.put(`${API_URL}/api/loans/${loanId}/accept-offer`, {}, config);
             fetchLoans();
             alert('Offer Accepted! Waiting for disbursement.');
         } catch (error) {

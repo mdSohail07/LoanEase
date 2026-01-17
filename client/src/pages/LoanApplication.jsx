@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { FaMoneyBillWave, FaClock, FaPercentage, FaCheckCircle } from 'react-icons/fa';
+const API_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:5050';
 
 const LoanApplication = () => {
     const [formData, setFormData] = useState({
@@ -45,7 +46,7 @@ const LoanApplication = () => {
             const config = {
                 headers: { Authorization: `Bearer ${user.token}` },
             };
-            await axios.post('http://localhost:5050/api/loans', formData, config);
+            await axios.post(`${API_URL}/api/loans`, formData, config);
             navigate('/user/dashboard');
         } catch (error) {
             console.error('Error applying for loan:', error);
