@@ -4,7 +4,6 @@ import { useNavigate, Link } from 'react-router-dom';
 
 const Register = () => {
     const [formData, setFormData] = useState({ name: '', email: '', password: '' });
-    const [error, setError] = useState('');
     const { register } = useAuth();
     const navigate = useNavigate();
 
@@ -12,55 +11,74 @@ const Register = () => {
         e.preventDefault();
         const result = await register(formData.name, formData.email, formData.password);
         if (result.success) {
-            navigate('/user/dashboard'); // Default to user dashboard after reg
+            navigate('/user/kyc'); // Direct to KYC first for 100% flow
         } else {
-            setError(result.message);
+            alert(result.message);
         }
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
-            <div className="bg-white p-8 rounded-lg shadow-md w-96">
-                <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
-                {error && <div className="bg-red-100 text-red-700 p-2 rounded mb-4">{error}</div>}
-                <form onSubmit={handleSubmit}>
-                    <div className="mb-4">
-                        <label className="block text-gray-700 mb-2">Name</label>
+        <div className="max-w-md mx-auto mt-20">
+            <div className="card-premium glass p-8">
+                <div className="text-center mb-10">
+                    <h1 className="text-3xl font-bold mb-2">Join LoanEase</h1>
+                    <p className="text-gray-600">Create an account to start your application</p>
+                </div>
+
+                <form onSubmit={handleSubmit} className="space-y-5" autoComplete="off">
+                    {/* Honeypot to trick browser autofill */}
+                    <input type="text" name="prevent_autofill" style={{ display: 'none' }} tabIndex="-1" />
+                    <input type="password" name="password_prevent_autofill" style={{ display: 'none' }} tabIndex="-1" />
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
                         <input
                             type="text"
-                            className="w-full p-2 border rounded"
+                            name="reg_fullname"
+                            id="reg_fullname"
+                            className="input-premium"
+                            placeholder="Enter your full name"
                             value={formData.name}
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                             required
+                            autoComplete="new-password"
                         />
                     </div>
-                    <div className="mb-4">
-                        <label className="block text-gray-700 mb-2">Email</label>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
                         <input
                             type="email"
-                            className="w-full p-2 border rounded"
+                            name="reg_email"
+                            id="reg_email"
+                            className="input-premium"
+                            placeholder="Enter your email address"
                             value={formData.email}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                             required
+                            autoComplete="new-password"
                         />
                     </div>
-                    <div className="mb-6">
-                        <label className="block text-gray-700 mb-2">Password</label>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
                         <input
                             type="password"
-                            className="w-full p-2 border rounded"
+                            name="reg_password"
+                            id="reg_password"
+                            className="input-premium"
+                            placeholder="Enter a secure password"
                             value={formData.password}
                             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                             required
+                            autoComplete="new-password"
                         />
                     </div>
-                    <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
-                        Register
+                    <button type="submit" className="btn-primary w-full py-4 text-lg">
+                        Create Account
                     </button>
+                    <p className="text-center text-sm text-gray-600">
+                        Already have an account? <Link to="/login" className="text-indigo-600 font-semibold hover:underline">Sign In</Link>
+                    </p>
                 </form>
-                <p className="mt-4 text-center">
-                    Already have an account? <Link to="/login" className="text-blue-600">Login</Link>
-                </p>
             </div>
         </div>
     );

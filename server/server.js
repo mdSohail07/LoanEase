@@ -7,6 +7,11 @@ const { Server } = require('socket.io');
 
 dotenv.config();
 
+// Fallback for environment variables if .env is corrupted
+if (!process.env.JWT_SECRET) {
+  process.env.JWT_SECRET = 'loanease_secret_fallback_123';
+}
+
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -25,8 +30,8 @@ mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/loanease', 
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-.then(() => console.log('MongoDB Connected'))
-.catch(err => console.log(err));
+  .then(() => console.log('MongoDB Connected'))
+  .catch(err => console.log(err));
 
 // Make io accessible in routes
 app.use((req, res, next) => {
@@ -37,24 +42,26 @@ app.use((req, res, next) => {
 // Routes
 const authRoutes = require('./routes/authRoutes');
 const loanRoutes = require('./routes/loanRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 const offerRoutes = require('./routes/offerRoutes');
 const userRoutes = require('./routes/userRoutes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/loans', loanRoutes);
+app.use('/api/admin', adminRoutes);
 app.use('/api/loan-offers', offerRoutes);
 app.use('/api/users', userRoutes);
 
 // Socket.IO Connection
 io.on('connection', (socket) => {
   console.log('New client connected: ' + socket.id);
-  
+
   socket.on('disconnect', () => {
     console.log('Client disconnected');
   });
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = 5050; // Hardcoded to avoid conflict on 5000
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

@@ -12,55 +12,56 @@ const Login = () => {
         e.preventDefault();
         const result = await login(formData.email, formData.password);
         if (result.success) {
-            if (result.role === 'admin') navigate('/admin/dashboard');
-            // check role from context or stored user if available immediately, 
-            // but login returns success. Best to redirect to dashboard and let dashboard route handle role redirect or use the returned user data if modified login to return it.
-            // For now, simple redirect to home which will redirect based on role or let user choose.
-            // Actually, let's redirect to specific dashboards.
-            // I need to peek at the user data.
-            // Let's assume login saves to context.
-            // We can fetch from localstorage for a quick check or update login to return user.
-            const user = JSON.parse(localStorage.getItem('loanEaseUser'));
-            if (user.role === 'admin') navigate('/admin/dashboard');
-            else navigate('/user/dashboard');
+            navigate(formData.email === 'admin@gmail.com' ? '/admin/dashboard' : '/user/dashboard');
         } else {
-            setError(result.message);
+            alert(result.message);
         }
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
-            <div className="bg-white p-8 rounded-lg shadow-md w-96">
-                <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
-                {error && <div className="bg-red-100 text-red-700 p-2 rounded mb-4">{error}</div>}
-                <form onSubmit={handleSubmit}>
-                    <div className="mb-4">
-                        <label className="block text-gray-700 mb-2">Email</label>
+        <div className="max-w-md mx-auto mt-20">
+            <div className="card-premium glass p-8">
+                <div className="text-center mb-10">
+                    <h1 className="text-3xl font-bold mb-2">Welcome Back</h1>
+                    <p className="text-gray-600">Enter your credentials to access your account</p>
+                </div>
+
+                <form onSubmit={handleSubmit} className="space-y-6" autoComplete="off">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
                         <input
                             type="email"
-                            className="w-full p-2 border rounded"
+                            name="login_user_email"
+                            id="login_user_email"
+                            className="input-premium"
+                            placeholder="Enter your email address"
                             value={formData.email}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                             required
+                            autoComplete="chrome-off"
                         />
                     </div>
-                    <div className="mb-6">
-                        <label className="block text-gray-700 mb-2">Password</label>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
                         <input
                             type="password"
-                            className="w-full p-2 border rounded"
+                            name="login_user_password"
+                            id="login_user_password"
+                            className="input-premium"
+                            placeholder="Enter your password"
                             value={formData.password}
                             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                             required
+                            autoComplete="new-password"
                         />
                     </div>
-                    <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
-                        Login
+                    <button type="submit" className="btn-primary w-full py-4 text-lg">
+                        Sign In
                     </button>
+                    <p className="text-center text-sm text-gray-600">
+                        Don't have an account? <Link to="/register" className="text-indigo-600 font-semibold hover:underline">Create one</Link>
+                    </p>
                 </form>
-                <p className="mt-4 text-center">
-                    Don't have an account? <Link to="/register" className="text-blue-600">Register</Link>
-                </p>
             </div>
         </div>
     );

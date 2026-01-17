@@ -12,16 +12,19 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         const userInfo = localStorage.getItem('loanEaseUser');
         if (userInfo) {
-            const parsedUser = JSON.parse(userInfo);
-            setUser(parsedUser);
-            // Optional: Verify token with backend here
+            try {
+                const parsedUser = JSON.parse(userInfo);
+                setUser(parsedUser);
+            } catch (e) {
+                localStorage.removeItem('loanEaseUser');
+            }
         }
         setLoading(false);
     }, []);
 
     const login = async (email, password) => {
         try {
-            const response = await axios.post('http://localhost:5001/api/auth/login', { email, password });
+            const response = await axios.post('http://localhost:5050/api/auth/login', { email, password });
             setUser(response.data);
             localStorage.setItem('loanEaseUser', JSON.stringify(response.data));
             return { success: true };
@@ -32,7 +35,7 @@ export const AuthProvider = ({ children }) => {
 
     const register = async (name, email, password) => {
         try {
-            const response = await axios.post('http://localhost:5000/api/auth/register', { name, email, password });
+            const response = await axios.post('http://localhost:5050/api/auth/register', { name, email, password });
             setUser(response.data);
             localStorage.setItem('loanEaseUser', JSON.stringify(response.data));
             return { success: true };
@@ -46,8 +49,17 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('loanEaseUser');
     };
 
+    const updateUserData = (newData) => {
+        setUser(prev => {
+            if (!prev) return null;
+            const updated = { ...prev, ...newData };
+            localStorage.setItem('loanEaseUser', JSON.stringify(updated));
+            return updated;
+        });
+    };
+
     return (
-        <AuthContext.Provider value={{ user, login, register, logout, loading }}>
+        <AuthContext.Provider value={{ user, login, register, logout, loading, updateUserData }}>
             {!loading && children}
         </AuthContext.Provider>
     );

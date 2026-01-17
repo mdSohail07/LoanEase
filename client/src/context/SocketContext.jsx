@@ -12,7 +12,7 @@ export const SocketProvider = ({ children }) => {
 
     useEffect(() => {
         if (user) {
-            const newSocket = io('http://localhost:5001');
+            const newSocket = io('http://localhost:5050');
             setSocket(newSocket);
 
             return () => newSocket.close();

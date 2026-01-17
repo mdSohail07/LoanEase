@@ -8,6 +8,8 @@ import Register from './pages/Register';
 import UserDashboard from './pages/UserDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import LoanApplication from './pages/LoanApplication';
+import Home from './pages/Home';
+import KYCVerification from './pages/KYCVerification';
 
 const PrivateRoute = ({ children, roles }) => {
     const { user, loading } = useAuth();
@@ -28,9 +30,9 @@ const PrivateRoute = ({ children, roles }) => {
 
 const Layout = ({ children }) => {
     return (
-        <div className="min-h-screen bg-gray-50 text-gray-900 font-sans">
+        <div className="min-h-screen">
             <Navbar />
-            <main>{children}</main>
+            <main className="container mx-auto px-4 py-8">{children}</main>
         </div>
     )
 }
@@ -71,7 +73,16 @@ function App() {
                                 }
                             />
 
-                            <Route path="/" element={<Navigate to="/login" />} />
+                            <Route path="/" element={<Home />} />
+                            <Route
+                                path="/user/kyc"
+                                element={
+                                    <PrivateRoute roles={['user']}>
+                                        <KYCVerification />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route path="*" element={<Navigate to="/" />} />
                         </Routes>
                     </Layout>
                 </Router>
