@@ -3,7 +3,11 @@ import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { FaMoneyBillWave, FaClock, FaPercentage, FaCheckCircle } from 'react-icons/fa';
-const API_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:5050';
+const API_URL =
+  import.meta.env.MODE === 'development'
+    ? 'http://localhost:5050'
+    : import.meta.env.VITE_BACKEND_API_URL;
+
 
 const LoanApplication = () => {
     const [formData, setFormData] = useState({
