@@ -3,11 +3,7 @@ import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { FaUsers, FaHandHoldingUsd, FaClock, FaCheckCircle, FaTimesCircle, FaChartPie, FaRocket, FaHistory } from 'react-icons/fa';
 
-const API_URL =
-  import.meta.env.MODE === 'development'
-    ? 'http://localhost:5050'
-    : import.meta.env.VITE_BACKEND_API_URL;
-
+const API_URL = import.meta.env.VITE_BACKEND_API_URL;
 
 const AdminDashboard = () => {
     const { user } = useAuth();
