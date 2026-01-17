@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import io from 'socket.io-client';
 import { useAuth } from './AuthContext';
+const API_URL = import.meta.env.VITE_BACKEND_API_URL
 
 const SocketContext = createContext();
 
@@ -12,7 +13,7 @@ export const SocketProvider = ({ children }) => {
 
     useEffect(() => {
         if (user) {
-            const newSocket = io('http://localhost:5050');
+            const newSocket = io(`${API_URL}`);
             setSocket(newSocket);
 
             return () => newSocket.close();
